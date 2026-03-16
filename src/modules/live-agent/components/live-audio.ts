@@ -337,7 +337,7 @@ export class GdmLiveAudio extends LitElement {
   private async initClient() {
     this.initAudio();
     this.client = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
+      apiKey: import.meta.env.VITE_GEMINI_API_KEY,
     });
 
     this.outputNode.connect(this.outputAudioContext.destination);
@@ -638,6 +638,11 @@ Key Quotes/Philosophy:
           </button>
           <button class="control-circle main" id="startButton" @click=${this.startRecording} ?disabled=${this.isRecording} title="Start recording">
             <span class="icon record"></span>
+          </button>
+          <button class="control-circle" id="generateButton" @click=${() => this.emitLiveEvent('live-agent:trigger-generation', {})} ?disabled=${!this.isRecording} title="Generate Visuals from Context">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4.5l1.5 4.5h4.5l-3.5 3 1.5 4.5-4-3-4 3 1.5-4.5-3.5-3h4.5z" fill="currentColor"/>
+            </svg>
           </button>
           <button class="control-circle" id="stopButton" @click=${this.stopRecording} ?disabled=${!this.isRecording} title="Stop recording">
             <span class="icon stop"></span>

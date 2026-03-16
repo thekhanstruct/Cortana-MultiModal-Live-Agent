@@ -31,7 +31,7 @@ const pollForVideo = async (operation: any) => {
 
 const fetchVideoBlob = async (uri: string) => {
   const url = new URL(uri);
-  url.searchParams.append('key', process.env.API_KEY || '');
+  url.searchParams.append('key', import.meta.env.VITE_GEMINI_API_KEY || '');
   const videoResponse = await fetch(url.toString());
   if (!videoResponse.ok) {
     throw new Error(`Failed to fetch video content: ${videoResponse.statusText}`);

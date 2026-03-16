@@ -1,5 +1,5 @@
 export const validateHackathonRequirements = () => {
-  const cloudEndpointConfigured = !!(process.env.CLOUD_PERSIST_ENDPOINT || '').trim();
+  const cloudEndpointConfigured = !!(import.meta.env.VITE_CLOUD_PERSIST_ENDPOINT || '').trim();
   return {
     usesGemini: true,
     usesGenAISDK: true,

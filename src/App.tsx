@@ -12,6 +12,7 @@ import './modules/live-agent/components/live-audio';
 import { routeAgentTask } from './orchestration/agentRouter';
 import { createTask } from './orchestration/taskDistributor';
 import { validateHackathonRequirements } from './orchestration/requirementGuard';
+import { createContext } from 'react';
 import { checkCloudHealth } from './cloud/services/cloudHealthService';
 
 const AUTO_ROUTE_COOLDOWN_MS = 6000;
@@ -23,6 +24,14 @@ const normalizeTranscript = (text: string) =>
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'gdm-live-audio': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+    }
+  }
+}
 
 const App: React.FC = () => {
   const workflow = useWorkflowCoordinator();
@@ -196,31 +205,18 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let active = true;
-    let timerId: number | undefined;
-
-    const generateAmbientMedia = async () => {
-      if (!active || !liveConnected || !storytellerRef.current) return;
+    const onTriggerGeneration = async () => {
+      if (!liveConnected || !storytellerRef.current) return;
       try {
-        await storytellerRef.current.generateFromPrompt("An ambient, cinematic space scene from The Expanse, realistic, highly detailed, sci-fi");
+        await storytellerRef.current.generateFromPrompt("A cinematic, highly detailed visual representation of the current conversation context, futuristic, moody");
       } catch (e) {
-        console.error("Ambient generation failed", e);
-      }
-      
-      if (active && liveConnected) {
-        timerId = window.setTimeout(generateAmbientMedia, 30000); // 30s delay between prompts
+        console.error("Manual generation failed", e);
       }
     };
 
-    if (liveConnected) {
-      generateAmbientMedia();
-    }
-
+    window.addEventListener('live-agent:trigger-generation', onTriggerGeneration as EventListener);
     return () => {
-      active = false;
-      if (timerId) {
-        window.clearTimeout(timerId);
-      }
+      window.removeEventListener('live-agent:trigger-generation', onTriggerGeneration as EventListener);
     };
   }, [liveConnected]);
 
@@ -285,7 +281,7 @@ const App: React.FC = () => {
             onToggleLocalFallback={setLocalFallbackEnabled}
           />
         }
-        center={<gdm-live-audio />}
+        center={<div dangerouslySetInnerHTML={{ __html: '<gdm-live-audio></gdm-live-audio>' }} style={{width: '100%', height: '100%'}} />}
         right={artifactPanel}
         bottom={
           <SessionStatusBar

@@ -10,13 +10,8 @@ const MULTIMODAL_PATTERN =
   /\b(generate|create|design|make|image|video|poster|storyboard|visual|thumbnail|reel)\b/i;
 
 export const routeAgentTask = (userGoal: string): RoutingDecision => {
-  if (MULTIMODAL_PATTERN.test(userGoal)) {
-    return {
-      primary: 'live-agent',
-      secondary: 'creative-storyteller',
-      reason: 'Multimodal creation requested',
-    };
-  }
+  // Multimodal generation explicit button trigger handles this now.
+  // We no longer auto-route voice directly to generation to prevent spamming.
 
   return {
     primary: 'live-agent',

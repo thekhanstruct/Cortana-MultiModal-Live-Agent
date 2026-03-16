@@ -12,8 +12,8 @@ export interface PersistArtifactResult {
   message: string;
 }
 
-const getCloudEndpoint = () => (process.env.CLOUD_PERSIST_ENDPOINT || '').trim();
-const getCloudPersistApiKey = () => (process.env.CLOUD_PERSIST_API_KEY || '').trim();
+const getCloudEndpoint = () => (import.meta.env.VITE_CLOUD_PERSIST_ENDPOINT || '').trim();
+const getCloudPersistApiKey = () => (import.meta.env.VITE_CLOUD_PERSIST_API_KEY || '').trim();
 
 const buildFileName = (kind: 'image' | 'video', prompt: string, explicit?: string) => {
   if (explicit) return explicit;

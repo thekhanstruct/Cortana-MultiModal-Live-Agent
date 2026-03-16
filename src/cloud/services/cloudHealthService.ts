@@ -4,7 +4,7 @@ export interface CloudHealthStatus {
   message: string;
 }
 
-const getCloudEndpoint = () => (process.env.CLOUD_PERSIST_ENDPOINT || '').trim();
+const getCloudEndpoint = () => (import.meta.env.VITE_CLOUD_PERSIST_ENDPOINT || '').trim();
 
 const buildHealthUrl = (uploadUrl: string) => {
   try {
